@@ -16,7 +16,7 @@ SRC_URI = "git://github.com/jdollar/rpi-i2s-audio.git;protocol=https"
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"
-SRCREV = "66b449f9d27b1793b01f0b7c857f53e5a55fffb6"
+SRCREV = "8835a3f3191278c53719537d550f70e9b5e33605"
 
 S = "${WORKDIR}/git"
 DEPENDS = "bc-native bison-native"
