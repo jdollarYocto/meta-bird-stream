@@ -23,7 +23,16 @@ DEPENDS = "bc-native bison-native"
 
 inherit module
 
-EXTRA_OEMAKE_append_task-install = " -C ${STAGING_KERNEL_DIR} M=${S}"
-KERNEL_MODULE_AUTOLOAD += "my_loader"
+PI_ZERO_MACRO = "PI_ZERO"
+PI_2_MACRO = "PI_2"
+PI_3_MACRO = "PI_3"
 
+EXTRA_OEMAKE_append_task-compile_raspberrypi0-wifi = " BOARD_MACRO=${PI_ZERO_MACRO} "
+EXTRA_OEMAKE_append_task-compile_raspberrypi0 = " BOARD_MACRO=${PI_ZERO_MACRO} "
+EXTRA_OEMAKE_append_task-compile_raspberrypi2 = " BOARD_MACRO=${PI_2_MACRO} "
+EXTRA_OEMAKE_append_task-compile_raspberrypi3 = " BOARD_MACRO=${PI_3_MACRO} "
+EXTRA_OEMAKE_append_task-compile_raspberrypi3-64 = " BOARD_MACRO=${PI_3_MACRO} "
+
+EXTRA_OEMAKE_append_task-install = "-C ${STAGING_KERNEL_DIR} M=${S}"
+KERNEL_MODULE_AUTOLOAD += "my_loader.ko"
 
