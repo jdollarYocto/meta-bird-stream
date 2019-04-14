@@ -1,42 +1,31 @@
 #!/usr/bin/env sh
 
+ALSA_DEVICE=default
+ALSA_SAMPLE_RATE=48000
+VIDEO_CODEC="h264"
+AUDIO_CODEC=pcm_s32le
 SCREEN_SIZE="640x480"
 VIDEO_FILE="/dev/video0"
-VIDEO_CODEC="h264"
 FRAME_RATE=15
 
-function twitch_stream {
-  if [[ ! -z ${TWITCH_STREAM_KEY} ]]; then
-    ffmpeg \
-      -f video4linux2 \
-      -s ${SCREEN_SIZE} \
-      -r ${FRAME_RATE} \
-      -vcodec ${VIDEO_CODEC} \
-      -i ${VIDEO_FILE} \
-      -codec copy \
-      -f flv \
-      "rtmp://live.twitch.tv/app/${TWITCH_STREAM_KEY}"
-  else
-    echo "Set TWITCH_STREAM_KEY to your twitch stream key from the dashboard"
-  fi
-}
+FLV_AUDIO_CODEC=aac
+FLV_VIDEO_CODEC=copy
 
-function youtube_stream {
-  echo "Not yet implemented"
-}
-
-case "$1" in
-  "twitch")
-    twitch_stream
-    ;;
-  "youtube")
-    youtube_stream
-    ;;
-  *)
-    echo "Pass in either twitch|youtube"
-    ;;
-esac
-
-#ffmpeg -f video4linux2 -s 640x480 -r 15 -vcodec h264 -i /dev/video0 -codec copy -f flv "rtmp://live.twitch.tv/app/{twichKey}"                                                   
-#ffmpeg -f video4linux2 -r 15 -vcodec h264 -f lavfi -i anullsrc=r=11025:cl=mono -i /dev/video0 -f flv "rtmp://a.rtmp.youtube.com/live2/{youtubeKey}"
-#ffmpeg -f video4linux2 -r 15 -vcodec h264 -i /dev/video0 -f flv "rtmp://a.rtmp.youtube.com/live2/{youtubeKey}"
+if [[ ! -z ${STREAM_URL} ]]; then
+arecord -D${ALSA_DEVICE} -fS32_LE -r${ALSA_SAMPLE_RATE} \
+  | ffmpeg \
+    -c:a ${AUDIO_CODEC} -i - \
+    -f video4linux2 \
+    -c:v ${VIDEO_CODEC} \
+    -s ${SCREEN_SIZE} \
+    -r ${FRAME_RATE} \
+    -i ${VIDEO_FILE} \
+    -c:a ${FLV_AUDIO_CODEC} \
+    -ab 32k \
+    -bufsize 32k \
+    -f flv \
+    -c:v ${FLV_VIDEO_CODEC} \
+    ${STREAM_URL}
+else
+  echo "Set STREAM_URL in order to stream the video to a rtmp source"
+fi

@@ -33,6 +33,5 @@ EXTRA_OEMAKE_append_task-compile_raspberrypi2 = " BOARD_MACRO=${PI_2_MACRO} "
 EXTRA_OEMAKE_append_task-compile_raspberrypi3 = " BOARD_MACRO=${PI_3_MACRO} "
 EXTRA_OEMAKE_append_task-compile_raspberrypi3-64 = " BOARD_MACRO=${PI_3_MACRO} "
 
-EXTRA_OEMAKE_append_task-install = "-C ${STAGING_KERNEL_DIR} M=${S}"
-KERNEL_MODULE_AUTOLOAD += "my_loader.ko"
-
+EXTRA_OEMAKE_append_task-install = " -C ${STAGING_KERNEL_DIR} M=${S} "
+KERNEL_MODULE_AUTOLOAD += "my_loader"
